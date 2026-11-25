@@ -6,8 +6,8 @@
     <language>en</language>
     <item>
       <title>Version 1.0</title>
-      <pubDate>Wed, 25 Nov 2026 04:24:20 +0000</pubDate>
-      <sparkle:version>6</sparkle:version>
+      <pubDate>Wed, 25 Nov 2026 05:38:51 +0000</pubDate>
+      <sparkle:version>7</sparkle:version>
       <sparkle:shortVersionString>1.0</sparkle:shortVersionString>
       <sparkle:minimumSystemVersion>26.2</sparkle:minimumSystemVersion>
       <description sparkle:format="plain-text"><![CDATA[First release.
@@ -23,7 +23,7 @@ Stems is a native macOS stem splitter for musicians, producers and DJs. Pull cle
 - Updates itself (Stems › Check for Updates…)
 
 Needs a Mac with Apple silicon and macOS 26.2 or later. The first split downloads the separation model (about 160 MB).]]></description>
-      <enclosure url="https://github.com/andreeeeaaaaas/stems-releases/releases/download/v1.0/Stems-1.0.dmg" type="application/octet-stream" sparkle:edSignature="M9pe5YgygZdPLDiVZqYTJ2G6eo+wxG5oypn+us2VhzlnNMeZzVrHIdlGeMWYA4NY5Bd9vgm9hHjPPMP1TbQlDw==" length="9446528"/>
+      <enclosure url="https://github.com/andreeeeaaaaas/stems-releases/releases/download/v1.0/Stems-1.0.dmg" type="application/octet-stream" sparkle:edSignature="KLHKf1ac6of2D6rTvZ5ilgC5ZWRI7Vy+0CbHbzlD2Ojv66iE6P3QKGwCCx7sGVJFOsIAYMBqL+Jk1gNdZ7aEDQ==" length="9449069"/>
     </item>
   </channel>
 </rss>
