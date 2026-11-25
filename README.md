@@ -1,6 +1,12 @@
+<p align="center">
+  <img src="icon.png" width="160" alt="The Stems app icon: pixel flowers growing from one stem">
+</p>
+
 # Stems
 
 A macOS stem splitter: drop in a track and get vocals, drums, bass and the rest as separate files, split on your Mac.
+
+<!-- Demo video: drag Stems full-compressed.mp4 onto this line in GitHub's editor -->
 
 ## Download
 
