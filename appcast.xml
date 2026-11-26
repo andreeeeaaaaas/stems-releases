@@ -5,6 +5,17 @@
     <link>https://github.com/andreeeeaaaaas/stems-releases</link>
     <language>en</language>
     <item>
+      <title>Version 1.0.1</title>
+      <pubDate>Thu, 26 Nov 2026 05:41:55 +0000</pubDate>
+      <sparkle:version>9</sparkle:version>
+      <sparkle:shortVersionString>1.0.1</sparkle:shortVersionString>
+      <sparkle:minimumSystemVersion>26.2</sparkle:minimumSystemVersion>
+      <description sparkle:format="plain-text"><![CDATA[Fixed
+
+- Tracks whose file extension doesn't match their format, such as an M4A download saved as .mp3, now split instead of showing "unsupported format".]]></description>
+      <enclosure url="https://github.com/andreeeeaaaaas/stems-releases/releases/download/v1.0.1/Stems-1.0.1.dmg" type="application/octet-stream" sparkle:edSignature="iQP2xCrzN5CuAsqoZhIMJ7hw6/Wktkg7fW3UBfB+ONlEG00/BwCaNlm/q5o0WKoZ3CDBa0Bhun5Q+HVjMdUqBQ==" length="9461621"/>
+    </item>
+    <item>
       <title>Version 1.0</title>
       <pubDate>Wed, 25 Nov 2026 06:10:08 +0000</pubDate>
       <sparkle:version>8</sparkle:version>
