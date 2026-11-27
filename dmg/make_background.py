@@ -6,7 +6,7 @@ nearest-neighbour, so the pixels stay crisp at 1x and 2x (Retina).
 
     python3 dmg/make_background.py [--theme dark|light]
 
-Writes dmg/background.png (660x400) and dmg/background@2x.png (1320x800).
+Writes dmg/background.png (2560x1600) and dmg/background@2x.png (5120x3200).
 Needs Pillow.
 """
 import argparse
@@ -15,12 +15,22 @@ from pathlib import Path
 
 from PIL import Image
 
-W, H = 165, 100           # logical canvas; x4 = 660x400
+W, H = 165, 100           # logical design area; x4 = 660x400, the art inside the window
+# Finder ignores the requested window size when the viewer's settings (path bar, tab bar) need more room,
+# and paints white past the image. So the image is far bigger than any window: the design sits top left
+# and the night, ground and garden carry on to the right and below.
+CW, CH = 640, 400         # logical canvas; x4 = 2560x1600
 OUT = Path(__file__).parent
 
 # Where Finder will place the icons, in logical pixels (keep in sync with
 # make-dmg.sh: window-coords / 4).
 APP_X, DROP_X, ICON_Y = 41, 124, 47
+# Finder draws the icon labels here, in black in Light Mode and white in Dark Mode; a DMG can't change
+# that. So each label sits on a mid-grey plate that both colours read on at about 4.5:1.
+# (centre x, half width) per label, and the plate's rows.
+PLATES = [(APP_X, 9), (DROP_X, 13)]
+PLATE_TOP, PLATE_BOTTOM = 65, 70
+PLATE = "#77777a"
 
 PALETTES = {
     "dark": dict(
@@ -68,11 +78,11 @@ def hex_rgb(h):
 
 def build(theme):
     pal = PALETTES[theme]
-    img = Image.new("RGBA", (W, H), hex_rgb(pal["bg"]))
+    img = Image.new("RGBA", (CW, CH), hex_rgb(pal["bg"]))
     px = img.load()
 
     def put(x, y, colour):
-        if 0 <= x < W and 0 <= y < H:
+        if 0 <= x < CW and 0 <= y < CH:
             px[x, y] = hex_rgb(colour)
 
     def colour_of(name):
@@ -89,17 +99,32 @@ def build(theme):
             continue
         put(x, y, pal["star"])
         placed += 1
+    # The same density of stars over the rest of the sky.
+    while placed < 45 * (CW * (H - 12)) // (W * (H - 12)):
+        x, y = rng.randrange(W, CW), rng.randrange(1, H - 12)
+        put(x, y, pal["star"])
+        placed += 1
 
     # --- ground: dithered strip like the base under the app icon ------------
-    for x in range(W):
+    for x in range(CW):
         for y in range(H - 3, H):
             put(x, y, pal["ground"][(x * 3 + y * 5 + (x // 3)) % len(pal["ground"])])
+    # Below the window's bottom edge: soil, sparse specks that thin out with depth.
+    for y in range(H, CH):
+        for x in range(CW):
+            if rng.random() < 0.10 * max(0.15, 1 - (y - H) / 40):
+                put(x, y, pal["ground"][(x + y) % len(pal["ground"])])
 
     # --- little garden: stems with the four flower types --------------------
     garden = [(9, "orange", 8), (19, "purple", 5), (30, "red", 7), (143, "blue", 8),
               (153, "orange", 5), (160, "purple", 6), (14, "blue", 4), (148, "red", 4),
               (24, "red", 3), (136, "purple", 3), (90, "orange", 3), (76, "blue", 3),
               (103, "red", 2), (64, "purple", 2)]
+    # More of the garden to the right, in loose clumps.
+    x = W + rng.randrange(4, 12)
+    while x < CW - 2:
+        garden.append((x, rng.choice(list(HEADS)), rng.choice([2, 3, 3, 4, 5, 6, 7, 8])))
+        x += rng.choice([4, 5, 6, 7, 14, 22, 30])
     for x, kind, height in garden:
         top = H - 4 - height
         for y in range(top, H - 3):
@@ -112,6 +137,13 @@ def build(theme):
             for rx, ch in enumerate(row):
                 if ch != ".":
                     put(x - hw // 2 + rx, top - len(rows) + ry, colour_of(keys[ch]))
+
+    # --- label plates, corners clipped --------------------------------------
+    for cx, half in PLATES:
+        for y in range(PLATE_TOP, PLATE_BOTTOM + 1):
+            inset = 1 if y in (PLATE_TOP, PLATE_BOTTOM) else 0
+            for x in range(cx - half + inset, cx + half + 1 - inset):
+                put(x, y, PLATE)
 
     # --- heading ------------------------------------------------------------
     text = "DRAG TO INSTALL"
@@ -146,8 +178,8 @@ def main():
     ap.add_argument("--theme", choices=PALETTES, default="dark")
     theme = ap.parse_args().theme
     img = build(theme)
-    img.resize((W * 4, H * 4), Image.NEAREST).convert("RGB").save(OUT / "background.png")
-    img.resize((W * 8, H * 8), Image.NEAREST).convert("RGB").save(OUT / "background@2x.png")
+    img.resize((CW * 4, CH * 4), Image.NEAREST).convert("RGB").save(OUT / "background.png", optimize=True)
+    img.resize((CW * 8, CH * 8), Image.NEAREST).convert("RGB").save(OUT / "background@2x.png", optimize=True)
     print(f"wrote {OUT/'background.png'} and background@2x.png ({theme})")
 
 

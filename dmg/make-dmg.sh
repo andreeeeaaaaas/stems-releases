@@ -24,13 +24,14 @@ mkdir "$WORK/stage"
 cp -R "$APP" "$WORK/stage/Stems.app"
 rm -f "$OUT"
 
-# Window is 660x400 to match the background. Icon centres are at x=165 and
+# The art is 660x400 (the image runs on past it); the window is 100pt taller for the title bar, tab bar
+# and path bar, which Finder counts in the window size. Icon centres are at x=165 and
 # x=495 (the art puts the arrow between them) and y=188.
 create-dmg \
   --volname "Stems" \
   --background "$WORK/background.tiff" \
   --window-pos 200 120 \
-  --window-size 660 400 \
+  --window-size 660 500 \
   --icon-size 128 \
   --text-size 13 \
   --icon "Stems.app" 165 188 \
