@@ -12,6 +12,7 @@ APP="${1:?usage: make-dmg.sh /path/to/Stems.app version [output-dir]}"
 VERSION="${2:?usage: make-dmg.sh /path/to/Stems.app version [output-dir]}"
 OUT_DIR="${3:-.}"
 HERE="$(cd "$(dirname "$0")" && pwd)"
+command -v create-dmg >/dev/null || { echo "make-dmg.sh needs create-dmg: brew install create-dmg" >&2; exit 1; }
 OUT="$OUT_DIR/Stems-$VERSION.dmg"
 WORK="$(mktemp -d)"
 trap 'rm -rf "$WORK"' EXIT
@@ -24,11 +25,18 @@ mkdir "$WORK/stage"
 cp -R "$APP" "$WORK/stage/Stems.app"
 rm -f "$OUT"
 
+# The mounted volume gets the app's icon.
+ICON="$(/usr/libexec/PlistBuddy -c 'Print :CFBundleIconFile' "$APP/Contents/Info.plist" 2>/dev/null || true)"
+ICNS="$APP/Contents/Resources/${ICON%.icns}.icns"
+VOLICON=()
+[ -n "$ICON" ] && [ -f "$ICNS" ] && VOLICON=(--volicon "$ICNS")
+
 # The art is 660x400 (the image runs on past it); the window is 100pt taller for the title bar, tab bar
 # and path bar, which Finder counts in the window size. Icon centres are at x=165 and
 # x=495 (the art puts the arrow between them) and y=188.
 create-dmg \
   --volname "Stems" \
+  ${VOLICON[@]+"${VOLICON[@]}"} \
   --background "$WORK/background.tiff" \
   --window-pos 200 120 \
   --window-size 660 500 \
